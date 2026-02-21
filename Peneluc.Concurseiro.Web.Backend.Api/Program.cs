@@ -28,8 +28,17 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration)
                  .Enrich.FromLogContext()
                  .WriteTo.Console());
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWeb",
+        policy => policy.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+});
 
 var app = builder.Build();
+
+app.UseCors("AllowWeb");
 
 if (app.Environment.IsDevelopment())
 {

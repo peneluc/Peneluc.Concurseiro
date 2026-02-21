@@ -35,62 +35,68 @@ public class QuestionReadRepository : IQuestionReadRepository
 
         var offset = (page - 1) * pageSize;
 
-        var sql = new StringBuilder(@"
-            SELECT 
-                q.id,
-                q.statement,
-                q.explanation,
-                s.name as SubjectName,
-                e.name as ExamName,
-                e.year as ExamYear,
-                q.difficulty
+        var sqlBase = new StringBuilder(@"
             FROM questions q
             JOIN subjects s ON s.id = q.subject_id
-            JOIN exam_sources e ON e.id = q.exam_source_id
+            JOIN exam_sources es ON es.id = q.exam_source_id
             WHERE 1=1
         ");
 
         var parameters = new DynamicParameters();
 
-        if (!string.IsNullOrEmpty(subject))
+        if (!string.IsNullOrWhiteSpace(subject))
         {
-            sql.Append(" AND s.name ILIKE @Subject ");
+            sqlBase.Append(" AND s.name ILIKE @Subject ");
             parameters.Add("Subject", $"%{subject}%");
         }
 
-        if (!string.IsNullOrEmpty(exam))
+        if (!string.IsNullOrWhiteSpace(exam))
         {
-            sql.Append(" AND e.name ILIKE @Exam ");
+            sqlBase.Append(" AND es.name ILIKE @Exam ");
             parameters.Add("Exam", $"%{exam}%");
         }
 
-        if (!string.IsNullOrEmpty(difficulty))
+        if (!string.IsNullOrWhiteSpace(difficulty))
         {
-            sql.Append(" AND q.difficulty = @Difficulty ");
+            sqlBase.Append(" AND q.difficulty = @Difficulty ");
             parameters.Add("Difficulty", difficulty);
         }
 
-        if (!string.IsNullOrEmpty(orderBy) &&
+        var sqlData = new StringBuilder(@"
+            SELECT 
+                q.id,
+                q.statement,
+                q.explanation,
+                q.difficulty,
+                q.subject_id AS SubjectId,
+                s.name AS SubjectName,
+                q.exam_source_id AS ExamSourceId,
+                es.name AS ExamName,
+                es.year AS ExamYear
+        ");
+
+        sqlData.Append(sqlBase);
+
+        if (!string.IsNullOrWhiteSpace(orderBy) &&
             AllowedOrderBy.Contains(orderBy.ToLower()))
         {
-            sql.Append($" ORDER BY {orderBy} ");
+            sqlData.Append($" ORDER BY {orderBy} ");
         }
         else
         {
-            sql.Append(" ORDER BY q.statement ");
+            sqlData.Append(" ORDER BY q.statement ");
         }
 
-        sql.Append(" LIMIT @PageSize OFFSET @Offset ");
-
+        sqlData.Append(" LIMIT @PageSize OFFSET @Offset ");
         parameters.Add("PageSize", pageSize);
         parameters.Add("Offset", offset);
 
         var data = await connection.QueryAsync<QuestionEntity>(
-            sql.ToString(), parameters);
+            sqlData.ToString(), parameters);
 
-        var total = await connection.ExecuteScalarAsync<int>(@"
-            SELECT COUNT(*) FROM questions
-        ");
+        var total = await connection.ExecuteScalarAsync<int>(
+            "SELECT COUNT(*) " + sqlBase.ToString(),
+            parameters);
 
         return new PagedResult<QuestionEntity>
         {
@@ -99,5 +105,88 @@ public class QuestionReadRepository : IQuestionReadRepository
             Page = page,
             PageSize = pageSize
         };
+    }
+
+    public async Task<IEnumerable<QuestionEntity>> GetAllAsync()
+    {
+        using var conn = _connectionFactory.Create();
+
+        const string sql = """
+            SELECT 
+                id,
+                statement,
+                explanation,
+                difficulty,
+                subject_id AS SubjectId,
+                exam_source_id AS ExamSourceId
+            FROM questions
+            ORDER BY id DESC
+        """;
+
+        return await conn.QueryAsync<QuestionEntity>(sql);
+    }
+
+    public async Task<QuestionEntity?> GetByIdAsync(Guid id)
+    {
+        using var conn = _connectionFactory.Create();
+
+        const string sql = """
+            SELECT 
+                id,
+                statement,
+                explanation,
+                difficulty,
+                subject_id AS SubjectId,
+                exam_source_id AS ExamSourceId
+            FROM questions
+            WHERE id = @Id
+        """;
+
+        return await conn.QueryFirstOrDefaultAsync<QuestionEntity>(
+            sql, new { Id = id });
+    }
+
+    public async Task<Guid> InsertAsync(QuestionEntity question)
+    {
+        using var conn = _connectionFactory.Create();
+
+        const string sql = """
+            INSERT INTO questions 
+                (statement, explanation, difficulty, subject_id, exam_source_id)
+            VALUES 
+                (@Statement, @Explanation, @Difficulty, @SubjectId, @ExamSourceId)
+            RETURNING id;
+        """;
+
+        return await conn.ExecuteScalarAsync<Guid>(sql, question);
+    }
+
+    public async Task UpdateAsync(QuestionEntity question)
+    {
+        using var conn = _connectionFactory.Create();
+
+        const string sql = """
+            UPDATE questions
+            SET statement = @Statement,
+                explanation = @Explanation,
+                difficulty = @Difficulty,
+                subject_id = @SubjectId,
+                exam_source_id = @ExamSourceId
+            WHERE id = @Id
+        """;
+
+        await conn.ExecuteAsync(sql, question);
+    }
+
+    public async Task DeleteAsync(Guid id)
+    {
+        using var conn = _connectionFactory.Create();
+
+        const string sql = """
+            DELETE FROM questions
+            WHERE id = @Id
+        """;
+
+        await conn.ExecuteAsync(sql, new { Id = id });
     }
 }

@@ -1,0 +1,36 @@
+﻿@using Peneluc.Concurseiro.Web.ViewModels
+@model PagedResultViewModel<QuestionViewModel>
+
+<h2>Questões</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nova Questão</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Enunciado</th>
+            <th>Matéria</th>
+            <th>Prova</th>
+            <th>Dificuldade</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Data)
+        {
+            <tr>
+                <td>@item.Statement</td>
+                <td>@item.SubjectName</td>
+                <td>@item.ExamName (@item.ExamYear)</td>
+                <td>@item.Difficulty</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                    <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

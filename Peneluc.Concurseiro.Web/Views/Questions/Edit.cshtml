@@ -1,0 +1,50 @@
+﻿@using Peneluc.Concurseiro.Web.ViewModels
+@model UpdateQuestionViewModel
+
+<h2>Editar Questão</h2>
+
+<form asp-action="Edit" method="post">
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label>Enunciado</label>
+        <textarea asp-for="Statement" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Explicação</label>
+        <textarea asp-for="Explanation" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label>Dificuldade</label>
+        <select asp-for="Difficulty" class="form-select">
+            <option>Easy</option>
+            <option>Medium</option>
+            <option>Hard</option>
+        </select>
+    </div>
+
+    <hr />
+    <h5>Alternativas</h5>
+
+    @for (int i = 0; i < Model.AnswerOptions.Count; i++)
+    {
+        <input type="hidden" asp-for="AnswerOptions[@i].Id" />
+
+        <div class="mb-2">
+            <input asp-for="AnswerOptions[@i].Description"
+                   class="form-control" />
+
+            <div class="form-check mt-1">
+                <input asp-for="AnswerOptions[@i].IsCorrect"
+                       class="form-check-input" />
+                <label class="form-check-label">Correta</label>
+            </div>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-warning">Atualizar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

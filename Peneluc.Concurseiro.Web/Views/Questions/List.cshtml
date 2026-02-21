@@ -1,0 +1,50 @@
+﻿@using Peneluc.Concurseiro.Web.ViewModels
+@model PagedResultViewModel<QuestionViewModel>
+
+<h2>Questões</h2>
+
+<form method="get">
+    <input type="text" name="subject" placeholder="Matéria" />
+    
+    <select name="difficulty">
+        <option value="">Todas</option>
+        <option value="Easy">Fácil</option>
+        <option value="Medium">Médio</option>
+        <option value="Hard">Difícil</option>
+    </select>
+
+    <button type="submit">Filtrar</button>
+</form>
+
+<hr />
+
+
+@if (Model?.Data != null && Model.Data.Any())
+{
+
+    @foreach (var q in Model.Data)
+    {
+        <div style="border:1px solid #ddd; padding:15px; margin-bottom:10px;">
+            <h4>@q.Statement</h4>
+            <p><b>Matéria:</b> @q.SubjectName</p>
+            <p><b>Concurso:</b> @q.ExamName (@q.ExamYear)</p>
+            <p><b>Dificuldade:</b> @q.Difficulty</p>
+        </div>
+    }
+
+    <div>
+        @if (Model.Page > 1)
+        {
+            <a href="?page=@(Model.Page - 1)">Anterior</a>
+        }
+
+        <span> Página @Model.Page </span>
+
+        <a href="?page=@(Model.Page + 1)">Próxima</a>
+    </div>
+
+}
+else
+{
+    <p>Nenhum registro encontrado.</p>
+}

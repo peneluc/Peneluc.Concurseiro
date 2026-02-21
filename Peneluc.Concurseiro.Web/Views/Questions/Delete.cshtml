@@ -1,0 +1,19 @@
+﻿@using Peneluc.Concurseiro.Web.ViewModels
+@model QuestionViewModel
+
+<h2>Excluir Questão</h2>
+
+<div class="alert alert-danger">
+    Tem certeza que deseja excluir esta questão?
+</div>
+
+<div>
+    <strong>@Model.Statement</strong>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

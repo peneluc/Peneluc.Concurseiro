@@ -2,4 +2,5 @@
   <Project Path="Peneluc.Concurseiro.Web.Backend.Api/Peneluc.Concurseiro.Web.Backend.Api.csproj" />
   <Project Path="Peneluc.Concurseiro.Web.Backend.Domain/Peneluc.Concurseiro.Web.Backend.Domain.csproj" />
   <Project Path="Peneluc.Concurseiro.Web.Backend.Infrastructure/Peneluc.Concurseiro.Web.Backend.Infrastructure.csproj" />
+  <Project Path="Peneluc.Concurseiro.Web/Peneluc.Concurseiro.Web.csproj" />
 </Solution>
