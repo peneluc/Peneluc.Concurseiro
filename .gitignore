@@ -1,0 +1,27 @@
+﻿﻿# Build results
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+**/.vs/
+*.user
+*.suo
+*.userprefs
+
+# VS Code
+.vscode/
+
+# Test results
+TestResults/
+
+# Publish output
+**/_publish/
+**/_deploy/
+
+# Environment specific files
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# OS generated files
+.DS_Store
+Thumbs.db
