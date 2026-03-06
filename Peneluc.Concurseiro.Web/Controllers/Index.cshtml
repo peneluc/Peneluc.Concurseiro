@@ -1,24 +1,14 @@
-﻿﻿@using Microsoft.AspNetCore.Html
+﻿@using Microsoft.AspNetCore.Html
+@using Peneluc.Concurseiro.Web.ViewModels
 @model PagedResultViewModel<QuestionViewModel>
 
 @{
     ViewData["Title"] = "Questões";
-
-    string GetSortIcon(string? columnName)
-    {
-        var sortOrder = ViewBag.CurrentSortOrder as string;
-        if (sortOrder == columnName) return "↑";
-        if (sortOrder == $"{columnName}_desc") return "↓";
-        return "";
-    }
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2>Questões</h2>
-    <div>
-        <button id="btnBatchDelete" class="btn btn-danger me-2" style="display:none;" form="batchDeleteForm">Excluir Selecionados (<span id="btnBatchDeleteCount">0</span>)</button>
-        <a asp-action="Create" class="btn btn-success">Nova Questão</a>
-    </div>
+    <a asp-action="Create" class="btn btn-success">Nova Questão</a>
 </div>
 
 <!-- Filter Form -->
@@ -29,7 +19,7 @@
             <input type="text" name="searchTerm" id="searchTerm" class="form-control" value="@ViewBag.CurrentSearchTerm" placeholder="Digite um termo para buscar..."/>
         </div>
     </div>
-    <div class="row g-3 mt-2">
+    <div class="row g-3 align-items-end mt-2">
         <div class="col-md-3">
             <label class="form-label">Data Início</label>
             <input type="date" name="startDate" class="form-control" value="@ViewBag.CurrentStartDate" />
@@ -59,50 +49,22 @@
             <a asp-action="Index" class="btn btn-outline-secondary w-100">Limpar</a>
         </div>
         <div class="col-md-2">
-            <button type="submit" asp-action="ExportCsv" id="btnExportCsv" class="btn btn-outline-success w-100">
-                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                Exportar CSV
-            </button>
+            <button type="submit" asp-action="ExportCsv" class="btn btn-outline-success w-100">Exportar CSV</button>
         </div>
     </div>
 </form>
 
 <!-- Questions Table -->
-<form id="batchDeleteForm" asp-action="DeleteBatch" method="post">
 <table class="table table-hover">
     <thead class="table-light">
         <tr>
-            <th style="width: 40px;">
-                <input type="checkbox" id="selectAll" class="form-check-input" />
-            </th>
             <th>
                 <a asp-action="Index" 
                    asp-route-sortOrder="@ViewBag.StatementSortParm"
                    asp-route-subjectId="@ViewBag.CurrentSubjectId"
                    asp-route-difficulty="@ViewBag.CurrentDifficulty"
-                   asp-route-searchTerm="@ViewBag.CurrentSearchTerm"
-                   asp-route-startDate="@ViewBag.CurrentStartDate" asp-route-endDate="@ViewBag.CurrentEndDate">
-                    Enunciado @GetSortIcon("statement")
-                </a>
-            </th>
-            <th>
-                <a asp-action="Index" 
-                   asp-route-sortOrder="@ViewBag.SubjectSortParm"
-                   asp-route-subjectId="@ViewBag.CurrentSubjectId"
-                   asp-route-difficulty="@ViewBag.CurrentDifficulty"
-                   asp-route-searchTerm="@ViewBag.CurrentSearchTerm"
-                   asp-route-startDate="@ViewBag.CurrentStartDate" asp-route-endDate="@ViewBag.CurrentEndDate">
-                    Matéria @GetSortIcon("subject")
-                </a>
-            </th>
-            <th>
-                <a asp-action="Index" 
-                   asp-route-sortOrder="@ViewBag.ExamSortParm"
-                   asp-route-subjectId="@ViewBag.CurrentSubjectId"
-                   asp-route-difficulty="@ViewBag.CurrentDifficulty"
-                   asp-route-searchTerm="@ViewBag.CurrentSearchTerm"
-                   asp-route-startDate="@ViewBag.CurrentStartDate" asp-route-endDate="@ViewBag.CurrentEndDate">
-                    Prova @GetSortIcon("exam")
+                   asp-route-searchTerm="@ViewBag.CurrentSearchTerm">
+                    Enunciado
                 </a>
             </th>
             <th>
@@ -110,19 +72,8 @@
                    asp-route-sortOrder="@ViewBag.DifficultySortParm"
                    asp-route-subjectId="@ViewBag.CurrentSubjectId"
                    asp-route-difficulty="@ViewBag.CurrentDifficulty"
-                   asp-route-searchTerm="@ViewBag.CurrentSearchTerm"
-                   asp-route-startDate="@ViewBag.CurrentStartDate" asp-route-endDate="@ViewBag.CurrentEndDate">
-                    Dificuldade @GetSortIcon("difficulty")
-                </a>
-            </th>
-            <th>
-                <a asp-action="Index"
-                   asp-route-sortOrder="@ViewBag.DateSortParm"
-                   asp-route-subjectId="@ViewBag.CurrentSubjectId"
-                   asp-route-difficulty="@ViewBag.CurrentDifficulty"
-                   asp-route-searchTerm="@ViewBag.CurrentSearchTerm"
-                   asp-route-startDate="@ViewBag.CurrentStartDate" asp-route-endDate="@ViewBag.CurrentEndDate">
-                    Data Criação @GetSortIcon("date")
+                   asp-route-searchTerm="@ViewBag.CurrentSearchTerm">
+                    Dificuldade
                 </a>
             </th>
             <th style="width: 150px;"></th>
@@ -155,16 +106,7 @@
                     }
                     @displayStatement
                 </td>
-                <td>@item.SubjectName</td>
-                <td>
-                    @item.ExamName
-                    @if (item.ExamYear.HasValue)
-                    {
-                        <span>(@item.ExamYear)</span>
-                    }
-                </td>
                 <td>@item.Difficulty</td>
-                <td>@item.CreatedAt.ToString("dd/MM/yyyy")</td>
                 <td class="text-end">
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">Editar</a>
                     <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@item.Id">
@@ -175,7 +117,6 @@
         }
     </tbody>
 </table>
-</form>
 
 <!-- Pagination Controls -->
 @{
@@ -241,34 +182,10 @@
             var button = event.relatedTarget;
             // Extrai info dos atributos data-*
             var id = button.getAttribute('data-id');
-
+            
             // Atualiza o input hidden do formulário dentro do modal
             var inputId = deleteModal.querySelector('#deleteId');
             inputId.value = id;
-        });
-
-        // Lógica para Selecionar Todos e Exclusão em Massa
-        $(function () {
-            $('#selectAll').on('change', function () {
-                $('.select-item').prop('checked', $(this).prop('checked'));
-                toggleBatchDelete();
-            });
-
-            $('.select-item').on('change', function () {
-                toggleBatchDelete();
-                var allChecked = $('.select-item:checked').length === $('.select-item').length;
-                $('#selectAll').prop('checked', allChecked);
-            });
-
-            function toggleBatchDelete() {
-                var count = $('.select-item:checked').length;
-                if (count > 0) {
-                    $('#btnBatchDelete').show();
-                    $('#btnBatchDeleteCount').text(count);
-                } else {
-                    $('#btnBatchDelete').hide();
-                }
-            }
         });
     </script>
 }

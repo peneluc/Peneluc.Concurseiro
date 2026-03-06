@@ -1,9 +1,14 @@
-﻿namespace Peneluc.Concurseiro.Web.ViewModels;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-public class UpdateAnswerOptionViewModel
+namespace Peneluc.Concurseiro.Web.ViewModels
 {
-    public Guid Id { get; set; }
+    public class UpdateAnswerOptionViewModel
+    {
+        public Guid Id { get; set; }
 
-    public string Description { get; set; } = string.Empty;
-    public bool IsCorrect { get; set; }
+        [Required(ErrorMessage = "A descrição da alternativa é obrigatória.")]
+        public string Description { get; set; }
+        public bool IsCorrect { get; set; }
+    }
 }

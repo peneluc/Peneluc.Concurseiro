@@ -1,16 +1,31 @@
-﻿namespace Peneluc.Concurseiro.Web.ViewModels;
+﻿﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-public class UpdateQuestionViewModel
+namespace Peneluc.Concurseiro.Web.ViewModels
 {
-    public Guid Id { get; set; }
+    public class UpdateQuestionViewModel
+    {
+        public Guid Id { get; set; }
 
-    public string Statement { get; set; } = string.Empty;
-    public string? Explanation { get; set; }
-    public string Difficulty { get; set; } = string.Empty;
+        [Required(ErrorMessage = "O campo Enunciado é obrigatório.")]
+        [MinLength(10, ErrorMessage = "O enunciado deve ter no mínimo 10 caracteres.")]
+        public string Statement { get; set; }
 
-    public Guid SubjectId { get; set; }
-    public Guid ExamSourceId { get; set; }
+        public string Explanation { get; set; }
 
-    public List<UpdateAnswerOptionViewModel> AnswerOptions { get; set; }
-        = new();
+        [Required(ErrorMessage = "O campo Dificuldade é obrigatório.")]
+        public string Difficulty { get; set; }
+
+        [Required(ErrorMessage = "O campo SubjectId é obrigatório.")]
+        public Guid SubjectId { get; set; }
+
+        [Required(ErrorMessage = "O campo ExamSourceId é obrigatório.")]
+        public Guid ExamSourceId { get; set; }
+
+        [Range(1900, 2030, ErrorMessage = "O ano do exame deve ser um ano válido.")]
+        public int? ExamYear { get; set; }
+
+        public List<UpdateAnswerOptionViewModel> AnswerOptions { get; set; } = new();
+    }
 }

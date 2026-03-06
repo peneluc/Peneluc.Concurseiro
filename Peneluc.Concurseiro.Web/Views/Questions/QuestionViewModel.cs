@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Peneluc.Concurseiro.Web.ViewModels
@@ -14,7 +14,6 @@ namespace Peneluc.Concurseiro.Web.ViewModels
         public Guid ExamSourceId { get; set; }
         public string? ExamName { get; set; }
         public int? ExamYear { get; set; }
-        public DateTime CreatedAt { get; set; }
         public List<AnswerOptionViewModel> AnswerOptions { get; set; } = new();
     }
 }

@@ -1,7 +1,11 @@
-﻿namespace Peneluc.Concurseiro.Web.ViewModels;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class CreateAnswerOptionViewModel
+namespace Peneluc.Concurseiro.Web.ViewModels
 {
-    public string Description { get; set; } = string.Empty;
-    public bool IsCorrect { get; set; }
+    public class CreateAnswerOptionViewModel
+    {
+        [Required(ErrorMessage = "A descrição da alternativa é obrigatória.")]
+        public string Description { get; set; }
+        public bool IsCorrect { get; set; }
+    }
 }

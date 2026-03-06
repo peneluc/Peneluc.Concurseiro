@@ -1,4 +1,4 @@
-namespace Peneluc.Concurseiro.Web.Models;
+namespace Peneluc.Concurseiro.Web.ViewModels;
 
 public class ErrorViewModel
 {

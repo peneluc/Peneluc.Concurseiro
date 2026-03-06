@@ -1,11 +1,11 @@
-﻿namespace Peneluc.Concurseiro.Web.ViewModels;
+﻿using System;
 
-public class AnswerOptionViewModel
+namespace Peneluc.Concurseiro.Web.ViewModels
 {
-    public Guid Id { get; set; }
-    public Guid QuestionId { get; set; }
-
-    public string Description { get; set; } = string.Empty;
-
-    public bool IsCorrect { get; set; }
+    public class AnswerOptionViewModel
+    {
+        public Guid Id { get; set; }
+        public string Description { get; set; }
+        public bool IsCorrect { get; set; }
+    }
 }

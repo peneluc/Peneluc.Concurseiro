@@ -1,0 +1,29 @@
+﻿@*
+    Este partial lê as chaves "ToastSuccess", "ToastError", etc. do TempData
+    e usa a biblioteca Toastr.js para exibir mensagens flutuantes.
+*@
+
+@if (TempData["ToastSuccess"] != null)
+{
+    <script type="text/javascript">
+        toastr.success('@Html.Raw(TempData["ToastSuccess"])');
+    </script>
+}
+@if (TempData["ToastError"] != null)
+{
+    <script type="text/javascript">
+        toastr.error('@Html.Raw(TempData["ToastError"])');
+    </script>
+}
+@if (TempData["ToastWarning"] != null)
+{
+    <script type="text/javascript">
+        toastr.warning('@Html.Raw(TempData["ToastWarning"])');
+    </script>
+}
+@if (TempData["ToastInfo"] != null)
+{
+    <script type="text/javascript">
+        toastr.info('@Html.Raw(TempData["ToastInfo"])');
+    </script>
+}

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Peneluc.Concurseiro.Web.Models;
+using Peneluc.Concurseiro.Web.ViewModels;
 
 namespace Peneluc.Concurseiro.Web.Controllers;
 

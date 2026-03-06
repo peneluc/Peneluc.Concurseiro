@@ -1,18 +1,23 @@
-﻿@using Peneluc.Concurseiro.Web.ViewModels
+﻿﻿@using Peneluc.Concurseiro.Web.ViewModels
 @model CreateQuestionViewModel
 
 <h2>Nova Questão</h2>
 
 <form asp-action="Create" method="post">
 
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div id="custom-validation-summary" class="text-danger mb-3" style="display: none;"></div>
+
     <div class="mb-3">
         <label class="form-label">Enunciado</label>
         <textarea asp-for="Statement" class="form-control"></textarea>
+        <span asp-validation-for="Statement" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
         <label class="form-label">Explicação</label>
         <textarea asp-for="Explanation" class="form-control"></textarea>
+        <span asp-validation-for="Explanation" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -22,16 +27,23 @@
             <option>Medium</option>
             <option>Hard</option>
         </select>
+        <span asp-validation-for="Difficulty" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">SubjectId (GUID)</label>
-        <input asp-for="SubjectId" class="form-control" />
+        <label class="form-label">Matéria</label>
+        <select asp-for="SubjectId" class="form-select" asp-items="ViewBag.Subjects">
+            <option value="">Selecione...</option>
+        </select>
+        <span asp-validation-for="SubjectId" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
-        <label class="form-label">ExamSourceId (GUID)</label>
-        <input asp-for="ExamSourceId" class="form-control" />
+        <label class="form-label">Banca/Origem</label>
+        <select asp-for="ExamSourceId" class="form-select" asp-items="ViewBag.ExamSources">
+            <option value="">Selecione...</option>
+        </select>
+        <span asp-validation-for="ExamSourceId" class="text-danger"></span>
     </div>
 
     <hr />
@@ -40,13 +52,13 @@
     @for (int i = 0; i < 4; i++)
     {
         <div class="mb-2">
-            <input name="AnswerOptions[@i].Description"
+            <input asp-for="AnswerOptions[i].Description"
                    class="form-control"
                    placeholder="Descrição da alternativa" />
+            <span asp-validation-for="AnswerOptions[i].Description" class="text-danger"></span>
 
             <div class="form-check mt-1">
-                <input type="checkbox"
-                       name="AnswerOptions[@i].IsCorrect"
+                <input asp-for="AnswerOptions[i].IsCorrect"
                        class="form-check-input" />
                 <label class="form-check-label">Correta</label>
             </div>
@@ -57,3 +69,8 @@
     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 
 </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/question-validation.js"></script>
+}
